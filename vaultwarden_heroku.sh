@@ -37,7 +37,7 @@ function heroku_bootstrap {
     heroku container:login
 
     echo "We must create a Heroku application to deploy to first."
-    APP_NAME=$(heroku create "${CREATE_APP_NAME}" --team rn-eventteknik ${HEROKU_CREATE_OPTIONS} --json | jq --raw-output '.name')
+    APP_NAME=$(heroku create "${CREATE_APP_NAME}" --team rn-eventteknik --region eu ${HEROKU_CREATE_OPTIONS} --json | jq --raw-output '.name')
     if [ "$USE_PSQL" -eq "1" ]
     then
         echo "We will use Heroku Postgres, which is free and sufficient for a small instance"
@@ -114,7 +114,7 @@ function build_image {
     echo "Logging into Heroku Container Registry to push the image (this will add an entry in your Docker config)"
     heroku container:login
     heroku stack:set container
-    heroku pipelines:add rn-vaultwarden --app "${APP_NAME}"
+    heroku pipelines:add --team rn-eventteknik rn-vaultwarden --app "${APP_NAME}"
 
     echo "Now we will build the amd64 image to deploy to Heroku with the specified port changes"
     cd ./${VAULTWARDEN_FOLDER}
