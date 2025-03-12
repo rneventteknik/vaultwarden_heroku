@@ -113,6 +113,7 @@ function build_image {
 
     echo "Logging into Heroku Container Registry to push the image (this will add an entry in your Docker config)"
     heroku container:login
+    heroku stack:set container
 
     echo "Now we will build the amd64 image to deploy to Heroku with the specified port changes"
     cd ./${VAULTWARDEN_FOLDER}
