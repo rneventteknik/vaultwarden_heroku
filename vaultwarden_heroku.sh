@@ -65,6 +65,8 @@ function heroku_bootstrap {
     echo "Additionally set an Admin Token too in the event additional options are needed."
     echo "Supressing output due to sensitive nature."
     heroku config:set ADMIN_TOKEN="$(openssl rand -base64 48)" -a "${APP_NAME}" > /dev/null
+    heroku stack:set container
+    heroku pipelines:add -s staging rn-vaultwarden --app "${APP_NAME}"
 
     echo "And set DB connections to seven in order not to saturate the free DB"
     heroku config:set DATABASE_MAX_CONNS=7 -a "${APP_NAME}"
@@ -113,8 +115,6 @@ function build_image {
 
     echo "Logging into Heroku Container Registry to push the image (this will add an entry in your Docker config)"
     heroku container:login
-    heroku stack:set container
-    heroku pipelines:add -s staging rn-vaultwarden --app "${APP_NAME}"
 
     echo "Now we will build the amd64 image to deploy to Heroku with the specified port changes"
     cd ./${VAULTWARDEN_FOLDER}
